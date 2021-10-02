@@ -11,6 +11,16 @@ app.permanent_session_lifetime = timedelta(minutes=5)
 db = SQLAlchemy(app)
 
 
+class Users(db.Model):
+    _id = db.Column('id', db.Integer, primary_key=True)
+    name = db.Column('name', db.String(100))
+    email = db.Column('email', db.String(100))
+    
+    def __init__(self, name, email):
+        self.email = email
+        self.name = name
+
+
 @app.route("/")
 def home():
     return render_template('index.html', content='Testing', y=['a', 2])
@@ -65,4 +75,5 @@ def logout():
 
 
 if __name__ == '__main__':
+    db.create_all()
     app.run(debug=True)
