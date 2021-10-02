@@ -1,9 +1,9 @@
-from flask import Flask, redirect, url_for, render_template, request, session
+from flask import Flask, redirect, url_for, render_template, request, session, flash
 from datetime import timedelta
 
 app = Flask(__name__)
 app.secret_key = 'hello'
-
+app.permanent_session_lifetime = timedelta(minutes=5)
 
 @app.route("/")
 def home():
@@ -38,6 +38,7 @@ def login():
 @app.route("/logout")
 def logout():
     session.pop("user", None)
+    flash('You have been log out', 'info')
     return redirect(url_for("login"))
 
 
