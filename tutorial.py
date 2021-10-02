@@ -5,6 +5,7 @@ app = Flask(__name__)
 app.secret_key = 'hello'
 app.permanent_session_lifetime = timedelta(minutes=5)
 
+
 @app.route("/")
 def home():
     return render_template('index.html', content='Testing', y=['a', 2])
@@ -14,7 +15,8 @@ def home():
 def user():
     if 'user' in session:
         user = session['user']
-        return f"<h1>{user}</h1>"
+        return render_template('user.html', user=user)
+    flash('You are already Logged in')
     return redirect(url_for("login"))
 
 
@@ -29,8 +31,10 @@ def login():
         session.permanent = True
         user = request.form['nm']
         session['user'] = user
+        flash('Login successful')
         return redirect(url_for('user'))
     if 'user' in session.keys():
+        flash('Already Logged in')
         return redirect(url_for('user'))
     return render_template('login.html')
 
