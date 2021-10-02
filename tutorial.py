@@ -10,9 +10,12 @@ def home():
     return render_template('index.html', content='Testing', y=['a', 2])
 
 
-@app.route('/<name>')
-def user(name):
-    return f'Hello {name}'
+@app.route('/user')
+def user():
+    if 'user' in session:
+        user = session['user']
+        return f"<h1>{user}</h1>"
+    return redirect(url_for("login"))
 
 
 @app.route("/admin")
@@ -23,9 +26,19 @@ def admin():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
+        session.permanent = True
         user = request.form['nm']
-        return redirect(url_for('user', name=user))
+        session['user'] = user
+        return redirect(url_for('user'))
+    if 'user' in session.keys():
+        return redirect(url_for('user'))
     return render_template('login.html')
+
+
+@app.route("/logout")
+def logout():
+    session.pop("user", None)
+    return redirect(url_for("login"))
 
 
 if __name__ == '__main__':
